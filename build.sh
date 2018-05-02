@@ -42,3 +42,12 @@ awscliSetup(){
     #configure AWS
     aws configure   
 }
+
+main(){
+    javaSetup
+    dockerSetup
+    awscliSetup
+    configureJenkins
+    awscliSetup
+}
+main
