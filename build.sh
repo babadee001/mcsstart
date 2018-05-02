@@ -19,6 +19,7 @@ awscliSetup(){
     sudo apt-get install python-pip
     #install AWS CLI
     sudo pip install awscli
+    sudo apt install awscli
 }
 
 configureJenkins(){
@@ -38,7 +39,7 @@ configureJenkins(){
     su – jenkins
 }
 
-awscliSetup(){
+awscliconfig(){
     #configure AWS
     aws configure   
 }
@@ -48,6 +49,6 @@ main(){
     dockerSetup
     awscliSetup
     configureJenkins
-    awscliSetup
+    awscliconfig
 }
 main
