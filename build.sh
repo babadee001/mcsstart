@@ -1,3 +1,5 @@
+echo 'Enter your instance IP'
+read ip
 javaSetup(){
     sudo add-apt-repository ppa:webupd8team/java
     sudo apt-get install python-software-properties
@@ -12,6 +14,31 @@ dockerSetup(){
     sudo apt install docker.io
 }
 
+nginxSetup(){
+    echo '############################## nginx ########################################'
+    sudo apt-get install nginx
+    sudo /etc/init.d/nginx start
+    if [ -d /etc/nginx/sites-enabled/default ]; then
+        sudo rm -rf /etc/nginx/sites-enabled/default
+    fi
+    if [ -d /etc/nginx/sites-enabled/mcs ]; then
+        echo ' ######################## Removing existing config for app ##############################'
+        sudo rm -rf /etc/nginx/sites-available/mcs
+        sudo rm -rf /etc/nginx/sites-enabled/mcs
+    fi
+
+    sudo bash -c 'cat > /etc/nginx/sites-available/mcs <<EOF
+    server {
+            listen 80;
+            server_name jenkins;
+            location / {
+                    proxy_pass 'http://$ip:8080';
+            }
+    }'
+    sudo ln -s /etc/nginx/sites-available/mcs /etc/nginx/sites-enabled/mcs
+    sudo service nginx restart
+}
+
 awscliSetup(){
     #install Python version 2.7 if it was not already installed during the JDK #prerequisite installation
     sudo apt-get install python2.7
@@ -19,6 +46,7 @@ awscliSetup(){
     sudo apt-get install python-pip
     #install AWS CLI
     sudo pip install awscli
+    sudo apt install awscli
 }
 
 configureJenkins(){
@@ -38,7 +66,17 @@ configureJenkins(){
     su – jenkins
 }
 
-awscliSetup(){
+awscliconfig(){
     #configure AWS
     aws configure   
 }
+
+main(){
+    javaSetup
+    dockerSetup
+    awscliSetup
+    nginxSetup
+    configureJenkins
+    awscliconfig
+}
+main
