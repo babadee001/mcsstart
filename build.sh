@@ -45,7 +45,6 @@ awscliSetup(){
     #install Pip package management for python
     sudo apt-get install python-pip
     #install AWS CLI
-    sudo pip install awscli
     sudo apt install awscli
 }
 
