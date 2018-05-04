@@ -8,16 +8,20 @@ javaSetup(){
 }
 
 dockerSetup(){
-    sudo apt-get update
-    sudo apt-get install docker-engine
     sudo apt-get install apt-transport-https ca-certificates
-    sudo apt install docker.io
+    sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+    sudo bash -c 'cat > /etc/apt/sources.list.d/docker.list <<EOF
+    deb https://apt.dockerproject.org/repo ubuntu-trusty main'
+    sudo apt-get update
+    apt-cache policy docker-engine
+    sudo apt-get install docker-engine
 }
 
 nginxSetup(){
     echo '############################## nginx ########################################'
     sudo apt-get install nginx
     sudo /etc/init.d/nginx start
+    sudo rm -rf /etc/nginx/sites-available/default
     if [ -d /etc/nginx/sites-enabled/default ]; then
         sudo rm -rf /etc/nginx/sites-enabled/default
     fi
@@ -45,7 +49,7 @@ awscliSetup(){
     #install Pip package management for python
     sudo apt-get install python-pip
     #install AWS CLI
-    sudo apt install awscli
+    sudo pip install awscli
 }
 
 configureJenkins(){
@@ -62,7 +66,7 @@ configureJenkins(){
     sudo usermod -aG docker jenkins
     echo "change Jenkins password"
     sudo passwd jenkins
-    su – jenkins
+    su jenkins
 }
 
 awscliconfig(){
